@@ -8,24 +8,24 @@ LOCK = Lock()
 requests = []
 
 
-def secure_print(s1, s2):
+def secure_print(s1):
     LOCK.acquire()
-    print(s1, s2)
+    print(s1)
     LOCK.release()
 
 
 def get_time():
-    r = random.randrange(0, 5)
+    r = random.randrange(0, 2)
     time.sleep(r)
     t = datetime.datetime.now()
     return t
 
 
 def b(b_list):
-    for i in range(1, 50):
+    for i in range(1, 5):
         b_list.append((get_time(), "B", "1"))
 
-    time.sleep(10)
+    time.sleep(1)
     print("processing b ...")
 
     total_delta = (b_list[-1][0] - b_list[0][0])
@@ -35,15 +35,14 @@ def b(b_list):
     for r, s1, s2 in b_list:
         delta = (r - last_time)
         if delta:
-            if delta and delta.seconds > 0:
-                print('next req in %d sec ' % delta.seconds)
-            time.sleep(delta.seconds)
-        secure_print(str(r), s1)
+            print('next req in %f sec ' % (delta.total_seconds()))
+            time.sleep(delta.total_seconds())
+        print(str(datetime.datetime.now()) + ', ' + str(r) + ", " + s1)
         last_time = r
 
 
 def reuters(r_list):
-    for i in range(1, 50):
+    for i in range(1, 5):
         r_list.append((get_time(), "R", "1"))
 
     time.sleep(10)
@@ -55,11 +54,12 @@ def reuters(r_list):
     last_time = r_list[0][0]
     for r, s1, s2 in r_list:
         delta = (r - last_time)
+        secure_print(delta.total_seconds() * 1000)
         if delta:
             if delta and delta.seconds > 0:
                 print('next req in %d sec ' % delta.seconds)
             time.sleep(delta.seconds)
-        secure_print(str(r), s1)
+        secure_print(str(r) + ", " + s1)
         last_time = r
 
 
@@ -72,8 +72,8 @@ if __name__ == '__main__':
     r_thread = Thread(target=reuters, args=(r_list,))
 
     b_thread.start()
-    r_thread.start()
+#    r_thread.start()
 
     b_thread.join()
-    r_thread.join()
+#    r_thread.join()
     print("DONE !!")
