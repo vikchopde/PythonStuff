@@ -7,8 +7,8 @@ requests = []
 
 
 def get_time():
-    r = random.randrange(0, 10)
-    time.sleep(r)
+#    r = random.randrange(0, 10)
+#    time.sleep(r)
     t = datetime.datetime.now()
     return t
 
@@ -23,9 +23,6 @@ if __name__ == '__main__':
     requests.append((get_time(), "123", "123"))
     requests.append((get_time(), "123", "123"))
 
-    for r in requests:
-        print(r[0])
-
     print(requests[-1][0], requests[0][0])
     total_delta = (requests[-1][0] - requests[0][0])
     print("%d total request to go in %s time" % (len(requests), total_delta))
@@ -34,7 +31,7 @@ if __name__ == '__main__':
     for r, s1, s2 in requests:
         delta = (r - last_time)
         if delta:
-            if delta and delta.seconds > 0:
+            if delta and delta.microseconds > 0:
                 print('next req in %d sec ' % delta.seconds)
             time.sleep(delta.seconds)
         print(r)
